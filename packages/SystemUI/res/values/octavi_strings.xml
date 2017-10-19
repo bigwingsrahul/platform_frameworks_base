@@ -41,4 +41,6 @@
     <!-- USB tethering QS tile -->
     <string name="quick_settings_usb_tether_label">USB tethering</string>
 
+    <!-- Status bar - icons -->
+    <string name="status_bar_icons_title">Status bar icons</string>
 </resources>
