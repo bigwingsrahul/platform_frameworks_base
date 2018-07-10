@@ -25,7 +25,7 @@ import com.android.internal.display.BrightnessSynchronizer;
 public class BrightnessUtils {
 
     public static final boolean sDisableGammaConversion =
-            SystemProperties.getBoolean("sys.brightness.disable_gamma_conversion", false);
+        SystemProperties.getBoolean("sys.brightness.disable_gamma_conversion", false);
 
     public static final boolean sysUseLowGamma = Boolean.parseBoolean(
         SystemProperties.get("persist.sys.brightness.low.gamma", "false"));
