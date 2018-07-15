@@ -6546,6 +6546,18 @@ public final class Settings {
         public static final String INCREASING_RING_RAMP_UP_TIME = "increasing_ring_ramp_up_time";
 
         /**
+          * Whether to show the clock in the right or left position or show it in the
+          * center
+          * 0: show the clock in the left position (LTR)
+          * 1: show the clock in the center
+          * 2: show the clock in the right position (LTR)
+          * default: 0
+          *
+          * @hide
+          */
+         public static final String STATUS_BAR_CLOCK = "status_bar_clock";
+
+        /**
          * Enable statusbar double tap gesture on to put device to sleep
          * 0 = 0ff, 1 = on
          * @hide
@@ -6553,16 +6565,14 @@ public final class Settings {
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
 
 	/**
-          * Whether to show the clock in the right or left position or show it in the
-          * center
-          * 0: show the clock in the left position (LTR)
-          * 1: show the clock in the center
-          * 2: show the clock in the right position (LTR)
-          * default: 0
+         * Display style of AM/PM next to clock in status bar
+          * 0: No display (Gingerbread/ICS stock)
+          * 1: Small display (Froyo stock)
+          * 2: Normal display (Eclair stock)
           * 
           * @hide
           */
-         public static final String STATUS_BAR_CLOCK = "status_bar_clock";
+        public static final String STATUS_BAR_AM_PM = "status_bar_am_pm";
 
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to
