@@ -6552,6 +6552,14 @@ public final class Settings {
          * the setting value. See an example above.
          */
 
+	/**
+         * Whether allowing pocket service to register sensors and dispatch informations.
+         *   0 = disabled
+         *   1 = enabled
+         * @hide
+         */
+        public static final String POCKET_JUDGE = "pocket_judge";
+
         /**
          * Whether the phone vibrates on call connect
          * @hide
