@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.util.cherish;
+package com.android.internal.util.octavi;
 
 import android.app.KeyguardManager;
 import android.content.Context;

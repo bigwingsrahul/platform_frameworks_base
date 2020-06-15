@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.internal.util.cherish;
+package com.android.internal.util.octavi;
 
 /* Master list of all actions for the power menu */
 public class PowerMenuConstants {

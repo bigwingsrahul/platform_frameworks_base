@@ -36,7 +36,7 @@ import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.SOM
 import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.STRONG_AUTH_NOT_REQUIRED;
 import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.STRONG_AUTH_REQUIRED_AFTER_USER_LOCKDOWN;
 
-import static com.android.internal.util.cherish.PowerMenuConstants.*;
+import static com.android.internal.util.octavi.PowerMenuConstants.*;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -175,8 +175,8 @@ import com.android.systemui.util.settings.GlobalSettings;
 import com.android.systemui.util.settings.SecureSettings;
 
 import dagger.Lazy;
-import com.android.internal.cherish.app.LineageGlobalActions;
-import com.android.internal.util.cherish.PowerMenuUtils;
+import com.android.internal.octavi.app.LineageGlobalActions;
+import com.android.internal.util.octavi.PowerMenuUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
