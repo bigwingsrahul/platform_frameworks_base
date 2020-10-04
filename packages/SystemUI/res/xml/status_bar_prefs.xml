@@ -122,6 +122,12 @@
         android:summary="%s"
         android:entries="@array/clock_options" />
 
+    <com.android.systemui.tuner.StatusBarSwitch
+        android:icon="@drawable/ic_statusbar_nfc"
+        android:key="nfc"
+        android:persistent="false"
+        android:title="@string/status_bar_nfc" />
+
     <com.android.systemui.tuner.TunerSwitch
         android:icon="@drawable/ic_statusbar_priority"
         android:key="low_priority"
