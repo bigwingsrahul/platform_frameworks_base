@@ -1527,9 +1527,9 @@ public final class StrictMode {
             builder.penaltyDeathOnNetwork();
         }
 
-        if (!Build.IS_ENG || DISABLE || SystemProperties.getBoolean(DISABLE_PROPERTY, false)) {
+        if (Build.IS_USER || Build.IS_USERDEBUG || DISABLE || SystemProperties.getBoolean(DISABLE_PROPERTY, false)) {
             // Detect nothing extra
-        } else {
+        } else if (Build.IS_ENG) {
             // Detect everything in bundled apps
             if (isBundledSystemApp(ai)) {
                 builder.detectAll();
