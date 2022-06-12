@@ -291,6 +291,10 @@ import com.android.internal.policy.PhoneLayoutInflater;
 import com.android.internal.util.Preconditions;
 
 import java.util.HashMap;
+import com.android.internal.octavi.app.LineageContextConstants;
+import com.android.internal.octavi.app.LineageGlobalActions;
+import com.android.internal.octavi.app.ILineageGlobalActions;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -1045,9 +1049,9 @@ public final class SystemServiceRegistry {
                     }
                 });
 
+
         registerService(Context.POCKET_SERVICE, PocketManager.class,
                  new CachedServiceFetcher<PocketManager>() {
-                     @Override
                      public PocketManager createService(ContextImpl ctx) {
                         if (!ctx.getResources().getBoolean(R.bool.config_pocketModeSupported)) {
                              return null;
@@ -1057,8 +1061,20 @@ public final class SystemServiceRegistry {
                          return new PocketManager(ctx.getOuterContext(), service);
                      }});
 
+        registerService(LineageContextConstants.LINEAGE_GLOBAL_ACTIONS_SERVICE, LineageGlobalActions.class,
+                new CachedServiceFetcher<LineageGlobalActions>() {
+                    public LineageGlobalActions createService(ContextImpl ctx)
+                            throws ServiceNotFoundException {
+                        final IBinder binder =
+                                ServiceManager.getServiceOrThrow(LineageContextConstants.LINEAGE_GLOBAL_ACTIONS_SERVICE);
+                        final ILineageGlobalActions service =
+                                ILineageGlobalActions.Stub.asInterface(binder);
+                        return new LineageGlobalActions(service);
+                    }
+                });
+
+
         registerService(Context.TV_INTERACTIVE_APP_SERVICE, TvInteractiveAppManager.class,
-                new CachedServiceFetcher<TvInteractiveAppManager>() {
             @Override
             public TvInteractiveAppManager createService(ContextImpl ctx)
                     throws ServiceNotFoundException {
