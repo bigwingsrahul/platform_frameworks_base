@@ -1769,6 +1769,13 @@ public class StorageManager {
         return RoSystemProperties.CRYPTO_ENCRYPTED;
     }
 
+    /**Add commentMore actions
+     * @hide
+     */
+    public static boolean inCryptKeeperBounce() {
+        return false;
+    }
+
     /**
      * {@hide}
      * Does this device have file-based encryption (FBE) enabled?
