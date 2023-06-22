@@ -20,9 +20,9 @@ import android.content.Context
 import android.database.ContentObserver
 import android.hardware.biometrics.common.AuthenticateReason
 import android.provider.Settings
-import com.android.internal.R.bool.config_performantAuthDefault
 import com.android.systemui.common.coroutine.ConflatedCallbackFlow.conflatedCallbackFlow
 import com.android.systemui.dagger.qualifiers.Background
+import com.android.systemui.res.R
 import com.android.systemui.user.domain.interactor.SelectedUserInteractor
 import com.android.systemui.util.settings.SecureSettings
 import javax.inject.Inject
@@ -37,7 +37,7 @@ class FingerprintInteractiveToAuthProviderImpl @Inject constructor(
     private val secureSettings: SecureSettings,
     private val selectedUserInteractor: SelectedUserInteractor,
 ) : FingerprintInteractiveToAuthProvider {
-    private val defaultValue = if (context.resources.getBoolean(config_performantAuthDefault)) {
+    private val defaultValue = if (context.resources.getBoolean(R.bool.config_fingerprintWakeAndUnlock)) {
         1
     } else {
         0
@@ -62,7 +62,7 @@ class FingerprintInteractiveToAuthProviderImpl @Inject constructor(
 
     override fun getVendorExtension(userId: Int): AuthenticateReason.Vendor? = null
 
-    override fun isEnabled(userId: Int): Boolean {
+    private fun isEnabled(userId: Int): Boolean {
         var value = Settings.Secure.getIntForUser(
             context.contentResolver,
             Settings.Secure.SFPS_PERFORMANT_AUTH_ENABLED,
