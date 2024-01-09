@@ -21,4 +21,8 @@
 
     <!-- Button to restart SystemUI, within the Restart Options dialog -->
     <string name="global_action_restart_systemui">SystemUI</string>
+    <string name="status_bar_call_strength">Call strength</string>
+
+    <!-- AI Assistant affordance [CHAR LIMIT=32] -->
+    <string name="accessibility_assistant_button">Ai Assistant</string>
 </resources>
