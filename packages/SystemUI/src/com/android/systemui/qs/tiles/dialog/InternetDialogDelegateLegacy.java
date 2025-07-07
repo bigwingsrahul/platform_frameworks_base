@@ -465,8 +465,8 @@ public class InternetDialogDelegateLegacy implements
             mInternetDetailsContentController.connectCarrierNetwork();
         });
         mMobileNetworkLayout.setOnLongClickListener(v -> {
-            if (!mInternetDialogController.isDeviceLocked()) {
-                mInternetDialogController.launchMobileNetworkSettings(v, mDefaultDataSubId);
+            if (!mInternetDetailsContentController.isDeviceLocked()) {
+                mInternetDetailsContentController.launchMobileNetworkSettings(v, mDefaultDataSubId);
                 return true;
             }
             return false;
