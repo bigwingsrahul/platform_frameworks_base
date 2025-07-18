@@ -121,6 +121,9 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
     public static final String TAG = "QuickSettingsController";
 
     public static final int SHADE_BACK_ANIM_SCALE_MULTIPLIER = 100;
+    
+    /** Flag to track if swipe started from right side */
+    private boolean mIsRightSwipe;
 
     private QS mQs;
     private final Lazy<NotificationPanelViewController> mPanelViewControllerLazy;
@@ -556,14 +559,28 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
 
     /** Returns whether touch is within QS area */
     private boolean isTouchInQsArea(float x, float y) {
+        // Check if touch is on right side first
+        float screenWidth = mPanelView.getWidth();
+        mIsRightSwipe = x >= screenWidth / 2;
+        
+        // Left side should never be in QS area
+        if (!mIsRightSwipe) {
+            Log.d(TAG, "iOS-like: Touch not in QS area - left side");
+            return false;
+        }
+        
         if (isSplitShadeAndTouchXOutsideQs(x)) {
             return false;
         }
+
         // TODO (b/265193930): remove dependency on NPVC
         // Let's reject anything at the very bottom around the home handle in gesture nav
         if (mPanelViewControllerLazy.get().isInGestureNavHomeHandleArea(y)) {
             return false;
         }
+        
+        // Allow QS interaction on right side
+        Log.d(TAG, "iOS-like: Touch in QS area - right side");
         return y <= mNotificationStackScrollLayoutController.getBottomMostNotificationBottom()
                 || y <= mQs.getView().getY() + mQs.getView().getHeight();
     }
@@ -571,21 +588,36 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
     /** Returns whether or not event should open QS */
     @VisibleForTesting
     boolean isOpenQsEvent(MotionEvent event) {
+        // Check if touch is on right side first
+        float x = event.getX();
+        float screenWidth = mPanelView.getWidth();
+        mIsRightSwipe = x >= screenWidth / 2;
+        
+        Log.d(TAG, "iOS-like: isOpenQsEvent x=" + x + " right=" + mIsRightSwipe);
+        
+        // Left side should never open QS
+        if (!mIsRightSwipe) {
+            Log.d(TAG, "iOS-like: Blocking QS open on left side");
+            return false;
+        }
+
         final int pointerCount = event.getPointerCount();
         final int action = event.getActionMasked();
 
-        final boolean
-                twoFingerDrag =
-                action == MotionEvent.ACTION_POINTER_DOWN && pointerCount == 2;
+        // Allow opening QS from right side with single finger
+        if (action == MotionEvent.ACTION_DOWN && mIsRightSwipe) {
+            Log.d(TAG, "iOS-like: Opening QS from right side swipe");
+            return true;
+        }
 
-        final boolean
-                stylusButtonClickDrag =
+        // Also allow traditional methods if on right side
+        final boolean twoFingerDrag = 
+                action == MotionEvent.ACTION_POINTER_DOWN && pointerCount == 2;
+        final boolean stylusButtonClickDrag =
                 action == MotionEvent.ACTION_DOWN && (event.isButtonPressed(
                         MotionEvent.BUTTON_STYLUS_PRIMARY) || event.isButtonPressed(
                         MotionEvent.BUTTON_STYLUS_SECONDARY));
-
-        final boolean
-                mouseButtonClickDrag =
+        final boolean mouseButtonClickDrag =
                 action == MotionEvent.ACTION_DOWN && (event.isButtonPressed(
                         MotionEvent.BUTTON_SECONDARY) || event.isButtonPressed(
                         MotionEvent.BUTTON_TERTIARY));
@@ -666,40 +698,30 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
      */
     @Override
     public boolean shouldQuickSettingsIntercept(float x, float y, float yDiff) {
-        boolean keyguardShowing = mBarState == KEYGUARD;
-        if (!isExpansionEnabled() || mCollapsedOnDown || (keyguardShowing
-                && mKeyguardBypassController.getBypassEnabled()) || mSplitShadeEnabled) {
+        // Only allow QS expansion from right side swipe
+        mIsRightSwipe = x >= mPanelView.getWidth() / 2;
+        
+        // Skip QS interaction entirely on left side
+        if (!mIsRightSwipe) {
             return false;
         }
-        int headerTop, headerBottom;
-        if (keyguardShowing || mQs == null) {
-            headerTop = mKeyguardStatusBar.getTop();
-            headerBottom = mKeyguardStatusBar.getBottom();
-        } else {
-            if (QSComposeFragment.isEnabled()) {
-                headerTop = mQs.getHeaderTop();
-                headerBottom = mQs.getHeaderBottom();
-            } else {
-                headerTop = mQs.getHeader().getTop();
-                headerBottom = mQs.getHeader().getBottom();
-            }
+        
+        // Don't allow QS interaction in certain states
+        boolean keyguardShowing = mBarState == KEYGUARD;
+        if (!isExpansionEnabled() || (keyguardShowing && mKeyguardBypassController.getBypassEnabled())) {
+            return false;
         }
-        int frameTop = keyguardShowing
-                || mQs == null ? 0 : mQsFrame.getTop();
-        mInterceptRegion.set(
-                /* left= */ (int) mQsFrame.getX(),
-                /* top= */ headerTop + frameTop,
-                /* right= */ (int) mQsFrame.getX() + mQsFrame.getWidth(),
-                /* bottom= */ headerBottom + frameTop);
-        // Also allow QS to intercept if the touch is near the notch.
-        mShadeTouchableRegionManager.updateRegionForNotch(mInterceptRegion);
-        final boolean onHeader = mInterceptRegion.contains((int) x, (int) y);
+        
+        // Skip split shade handling since we're controlling QS differently
+        if (mSplitShadeEnabled) {
+            return false;
+        }
 
-        if (getExpanded()) {
-            return onHeader || (yDiff < 0 && isTouchInQsArea(x, y));
-        } else {
-            return onHeader;
+        // Allow QS expansion on right side if within valid region
+        if (mQs != null) {
+            return y <= mQs.getView().getY() + mQs.getView().getHeight();
         }
+        return y <= mNotificationStackScrollLayoutController.getBottomMostNotificationBottom();
     }
 
     /** Returns amount header should be translated */
@@ -1027,16 +1049,17 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
 
     /** update expanded state of QS */
     void updateExpansion() {
-        if (mQs == null) return;
+        if (mQs == null) {
+            return;
+        }
+
         final float squishiness;
         if ((isExpandImmediate() || getExpanded()) && !mSplitShadeEnabled) {
             squishiness = 1;
-        } else if (mTransitioningToFullShadeProgress > 0.0f) {
-            squishiness = mLockscreenShadeTransitionController.getQsSquishTransitionFraction();
         } else {
-            squishiness = mNotificationStackScrollLayoutController
-                    .getNotificationSquishinessFraction();
+            squishiness = 0;
         }
+
         final float qsExpansionFraction = computeExpansionFraction();
         final float adjustedExpansionFraction = mSplitShadeEnabled
                 ? 1f : computeExpansionFraction();
@@ -2406,5 +2429,10 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
     interface FlingQsWithoutClickListener {
         void onFlingQsWithoutClick(ValueAnimator animator, float qsExpansionHeight,
                 float target, float vel);
+    }
+
+    @Override
+    public boolean isRightSwipeToQs() {
+        return mIsRightSwipe;
     }
 }

@@ -3239,6 +3239,9 @@ public final class NotificationPanelViewController implements
         if (!SceneContainerFlag.isEnabled()) {
             mShadeExpansionStateManager.onPanelExpansionChanged(
                     mExpandedFraction, isExpanded(), isTracking());
+            
+            // We no longer need to control notification alpha here
+            // QS expansion is handled entirely by QuickSettingsControllerImpl
         }
         updateVisibility();
     }

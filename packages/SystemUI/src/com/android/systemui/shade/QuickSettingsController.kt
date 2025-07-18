@@ -48,4 +48,7 @@ interface QuickSettingsController {
     /** Calculate height of QS panel */
     @Deprecated("specific to legacy DebugDrawable")
     fun calculatePanelHeightExpanded(stackScrollerPadding: Int): Int
+
+    /** Returns whether the swipe gesture to open QS was initiated from the right side */
+    fun isRightSwipeToQs() : Boolean;
 }

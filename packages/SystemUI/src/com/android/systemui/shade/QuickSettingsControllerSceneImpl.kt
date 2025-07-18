@@ -62,4 +62,8 @@ constructor(
     override fun calculatePanelHeightExpanded(stackScrollerPadding: Int): Int {
         throw UnsupportedOperationException()
     }
+
+     override fun isRightSwipeToQs() : Boolean {
+        throw UnsupportedOperationException()
+     }
 }
