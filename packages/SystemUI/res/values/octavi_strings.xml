@@ -76,4 +76,7 @@
 
     <!-- Label for the area where tiles can be dragged in to remove -->
     <string name="drag_to_tap_to_remove_tiles">Tap an active tile or drag here to remove</string>
+
+    <!-- AI Assistant affordance [CHAR LIMIT=32] -->
+    <string name="accessibility_assistant_button">Ai Assistant</string>
 </resources>
