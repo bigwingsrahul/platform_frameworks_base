@@ -6646,13 +6646,7 @@ public final class Settings {
          * @hide
          */
         public static final String FP_ERROR_VIBRATE = "fp_error_vibrate";
-         
-	/**
-	 * Whether to enable the ripple animation on fingerprint unlock
-         * @hide
-         */
-        public static final String ENABLE_RIPPLE_EFFECT = "enable_ripple_effect";
-
+        
         /**
          * Defines the screen-off animation to display
          * @hide
@@ -6675,12 +6669,6 @@ public final class Settings {
          * @hide
          */
         public static final String STATUSBAR_NOTIF_COUNT = "statusbar_notif_count";
-
-        /**
-         * Whether to enable the ripple animation on fingerprint unlock
-         * @hide
-         */
-        public static final String ENABLE_RIPPLE_EFFECT = "enable_ripple_effect";
 
         /**
           * Whether to take partial screenshot with volume down + power click.
